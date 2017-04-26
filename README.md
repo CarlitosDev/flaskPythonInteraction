@@ -1,7 +1,7 @@
 # flaskPythonInteraction
 Test basic pandas highchart functionality
 
-Requierements:
+Requirements:
 -------
 * pip install flask
 * pip install pandas_highcharts
