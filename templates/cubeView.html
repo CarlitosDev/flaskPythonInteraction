@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Template to render any Highcharts. Include jQuery to fiddle around with Ajax later on... -->
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<meta name="author" content="Aguilar">
+	<meta charset="utf-8">
+	<title>{{ pageTitle | safe}}</title>
+</head>
+
+<body class="body">
+	 <body>
+		<h3>{{ pageTitle }}</h3>
+		<p>{{ paragraph }}</p>
+        <div id="cubeChart"></div>
+            <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+            <script src="https://code.highcharts.com/highcharts.js"></script>
+            <script src="https://code.highcharts.com/highcharts-more.js"></script>
+            <script src="https://code.highcharts.com/modules/exporting.js"></script>
+		<script type="text/javascript">
+		  Highcharts.chart('cubeChart', {
+                chart: {
+                    polar: true,
+                    type: 'line'
+                },
+
+                title: {
+                    text: {{titleText |tojson }},
+                    x: -80
+                },
+
+                pane: {
+                    size: '80%'
+                },
+                xAxis: {
+                    categories:  {{ categories |tojson }},
+                    tickmarkPlacement: 'on',
+                    lineWidth: 0
+                },
+
+                yAxis: {
+                    gridLineInterpolation: 'polygon',
+                    lineWidth: 0,
+                    min: 0
+                },
+
+                tooltip: {
+                    shared: true,
+                    pointFormat: '<span style="color:{series.color}">{series.name}: <b>${point.y:,.0f}</b><br/>'
+                },
+
+                legend: {
+                    align: 'right',
+                    verticalAlign: 'top',
+                    y: 70,
+                    layout: 'vertical'
+                },
+
+                series: [{
+                    name: {{ label1 | tojson}},
+                    data: {{avgValues}},
+                    pointPlacement: 'on'
+                }, {
+                    name: {{ label2 | tojson}},
+                    data: {{maxValues}},
+                    pointPlacement: 'on'
+                }]
+            });
+		</script>
+	 </body>
+</html>

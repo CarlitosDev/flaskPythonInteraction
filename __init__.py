@@ -3,6 +3,7 @@ from readStocks import read_stocks, normaliseStocks
 from pandas_highcharts.core import serialize
 import pandas as pd
 from pandas.compat import StringIO
+from itertools import chain
 app = Flask(__name__)
 
 @app.route('/')
@@ -19,7 +20,7 @@ def homepage():
 def pieChart():
 	pageTitle   = 'Pie View'
 	description = 'Test pie charts from Python-Highcharts'
-	listOfTickers = [['AAPL', 'MSFT', 'TSCO.L', 'SBRY']]
+	listOfTickers = [['AAPL', 'MSFT', 'TSCO.L', 'SBRY']];
 	stocks = read_stocks(listOfSymbols = listOfTickers);
 	df = pd.DataFrame(stocks.mean(), columns=['avgPrice']);
 	df['total'] = 1
@@ -37,6 +38,22 @@ def polarChart():
 	df.fillna(0, inplace=True);
 	stockChart = serialize(df, render_to="stocksChart", polar=True, kind='bar', title='AveragePrice',  output_type='json')
 	return render_template("index.html", pageTitle=pageTitle, paragraph=description, chart=stockChart)
+
+@app.route('/cubeView')
+def cubeView():
+	pageTitle     = 'Cube visualisation of my stocks';
+	listOfTickers = [['AAPL', 'MSFT', 'TSCO.L', 'SBRY', 'BP', 'REP.MC']];
+	stocks        = read_stocks(listOfSymbols = listOfTickers);
+	df            = pd.DataFrame([stocks.mean(), stocks.max()]);
+	df.fillna(0, inplace=True);
+	label1        = 'average value';
+	label2        = 'max value';
+	avgValues     = df.ix[0].values.tolist();
+	maxValues     = df.ix[1].values.tolist();
+	categories    = list(chain.from_iterable(listOfTickers));
+	description   = 'Current tickers: ' + str(stocks.columns.values.tolist())[1:-1];
+	titleText     = 'from ' + stocks.index[0].strftime('%Y-%m-%d') + ' to ' + stocks.index[-1].strftime('%Y-%m-%d');
+	return render_template("cubeView.html", pageTitle=pageTitle, paragraph=description, categories=categories, titleText=titleText, label1=label1, label2=label2, avgValues=avgValues, maxValues=maxValues);
 
 if __name__ == "__main__":
     app.run()
