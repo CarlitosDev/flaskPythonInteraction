@@ -5,6 +5,7 @@ Requirements:
 -------
 * pip install flask
 * pip install pandas_highcharts
+* pip install pymongo
 
 Test it:
 -------
