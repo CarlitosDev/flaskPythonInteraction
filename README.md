@@ -6,9 +6,11 @@ Requirements:
 * pip install flask
 * pip install pandas_highcharts
 * pip install pymongo
+* pip install Flask-PyMongo
 
 Test it:
 -------
+1. Make sure MongoDB is running (mongod)
 1. python __init__.py
 1. http://127.0.0.1:5000/
 
@@ -16,9 +18,9 @@ Test it:
 
 
 ## Current views
-http://127.0.0.1:5000/cubeView
-http://127.0.0.1:5000/polar
-http://127.0.0.1:5000/pie
+1. http://127.0.0.1:5000/cubeView
+1. http://127.0.0.1:5000/polar
+1. http://127.0.0.1:5000/pie
 
 ```python
 __init__.py

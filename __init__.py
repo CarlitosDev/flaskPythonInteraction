@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from flask.ext.pymongo import PyMongo
-from readStocks import read_stocks, normaliseStocks
+from readStocks import read_stocks, normaliseStocks, getTickersList
 from pandas_highcharts.core import serialize
 import pandas as pd
 from pandas.compat import StringIO
@@ -9,9 +9,13 @@ app = Flask(__name__)
 
 @app.route('/')
 def homepage():
-	pageTitle   = 'Read my stocks'
-	listOfTickers = [['AAPL', 'MSFT', 'TSCO.L', 'SBRY']]
+    # data
+	tickersData   = getTickersList();
+	listOfTickers = [tickersData['Ticker'].tolist()]
+	#listOfTickers = [['AAPL', 'MSFT', 'TSCO.L', 'SBRY']]
 	stocks = read_stocks(listOfSymbols = listOfTickers);
+    # web content
+	pageTitle   = 'Read my stocks'
 	description = 'Current tickers: ' + str(stocks.columns.values.tolist())[1:-1]
 	titleText   = 'from ' + stocks.index[0].strftime('%Y-%m-%d') + ' to ' + stocks.index[-1].strftime('%Y-%m-%d')
 	stockChart  = serialize(stocks, render_to='stocksChart', output_type='json', title=titleText, chart_type='stock')

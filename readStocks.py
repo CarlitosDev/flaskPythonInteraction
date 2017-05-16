@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 import pandas as pd
 import pandas_datareader.data as web
 import numpy as np
+import os
 
 def read_stocks(listOfSymbols = [['AAPL', 'MSFT']], targetVariable = 'Adj Close'):
 
@@ -36,3 +37,12 @@ def normaliseStocks(mainDF):
     mainDFNorm = (mainDF - minVals)/(maxVals-minVals);
 
     return mainDFNorm, minVals, maxVals, avgVals;
+
+
+def getTickersList(xlsFile=[]):
+    if not bool(xlsFile):
+        fName     = 'listOfTickers.xlsx';
+        xlsRoot   = '/Users/carlosAguilar/Documents/PythonDev/Coding/flaskPythonInteraction';
+        xlsFile   = os.path.join(xlsRoot, fName)
+    df = pd.read_excel(xlsFile)
+    return df;
