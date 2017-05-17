@@ -12,9 +12,11 @@ def read_stocks(listOfSymbols = [['AAPL', 'MSFT']], targetVariable = 'Adj Close'
     startDT = endDT - relativedelta(years=1);
 
     # retrieve data from the web
-    mainDF = pd.DataFrame();
+    mainDF     = pd.DataFrame();
+    numSymbols = len(listOfSymbols[0]);
 
-    for symbolName in listOfSymbols:
+    for count, symbolName in enumerate(listOfSymbols[0]):
+        print('Reading {}{}/{}...'.format(symbolName, 1+count, numSymbols))
         df = web.DataReader(symbolName, "yahoo", startDT, endDT)[targetVariable]
         df.columns = symbolName;
         mainDF = mainDF.join(df, how='outer');

@@ -11,8 +11,7 @@ app = Flask(__name__)
 def homepage():
     # data
 	tickersData   = getTickersList();
-	listOfTickers = [tickersData['Ticker'].tolist()]
-	#listOfTickers = [['AAPL', 'MSFT', 'TSCO.L', 'SBRY']]
+	listOfTickers = [tickersData['Ticker'].tolist()];
 	stocks = read_stocks(listOfSymbols = listOfTickers);
     # web content
 	pageTitle   = 'Read my stocks'
