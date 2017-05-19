@@ -1,6 +1,10 @@
 # flask Python Interaction
 Proof of concept for a Google Cloud project. The current repository holds Python code to retrieve a list of tickers from Yahoo finance and plot them in a website using Flask and pandas_highcharts, a interface from Pandas to the Highcharts visualisation library.
 
+Comments:
+-------
+* 17/05/2017 Yahoo has changed the API so pandas_datareader is currently retrieving empty dataframes.
+
 Requirements:
 -------
 * pip install flask
@@ -13,8 +17,6 @@ Test it:
 1. Make sure MongoDB is running (mongod)
 1. python __init__.py
 1. http://127.0.0.1:5000/
-
-
 
 
 ## Current views

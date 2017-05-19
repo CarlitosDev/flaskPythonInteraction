@@ -1,5 +1,5 @@
 from flask import Flask, render_template
-from flask.ext.pymongo import PyMongo
+from flask_pymongo import PyMongo
 from readStocks import read_stocks, normaliseStocks, getTickersList
 from pandas_highcharts.core import serialize
 import pandas as pd
@@ -11,8 +11,14 @@ app = Flask(__name__)
 def homepage():
     # data
 	tickersData   = getTickersList();
-	listOfTickers = [tickersData['Ticker'].tolist()];
-	stocks = read_stocks(listOfSymbols = listOfTickers);
+	# Form the COUNTRY:
+	# tickersGoogle = tickersData['Exchange'] + ':' +   tickersData['Ticker'];
+	tickersGoogle = tickersData['Ticker'];
+	listOfTickers = tickersGoogle.tolist();
+	dataSource    = 'google';
+	targetVariable = 'Close';
+	stocks = read_stocks(listOfSymbols = listOfTickers, targetVariable = targetVariable, datasource = dataSource);
+	#stocks = read_stocks(listOfSymbols = listOfTickers);
     # web content
 	pageTitle   = 'Read my stocks'
 	description = 'Current tickers: ' + str(stocks.columns.values.tolist())[1:-1]

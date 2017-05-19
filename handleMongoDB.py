@@ -2,7 +2,7 @@
 import datetime as dt
 from dateutil.relativedelta import relativedelta
 import pandas as pd
-import pandas_datareader.data as web
+from pandas_datareader import data, wb
 import numpy as np
 from pymongo import MongoClient
 from readStocks import read_stocks, normaliseStocks
