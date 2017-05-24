@@ -23,6 +23,8 @@ Test it:
 1. http://127.0.0.1:5000/cubeView
 1. http://127.0.0.1:5000/polar
 1. http://127.0.0.1:5000/pie
+1. http://127.0.0.1:5000/scatterPlot
+1. http://127.0.0.1:5000/streamPlot
 
 ```python
 __init__.py
