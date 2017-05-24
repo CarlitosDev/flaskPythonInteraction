@@ -1,0 +1,15 @@
+<html>
+
+  <head>
+	<title>{{ pageTitle | safe}}</title>
+    <link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.2.min.css" type="text/css" />
+    <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.2.min.js"></script>
+    {{ script | safe }}
+  </head>
+	<body>
+    <div class=page>
+      <h1>{{ pageTitle | safe}}</h1>
+      {{ div | safe }}
+    </div>
+	</body>
+</html>

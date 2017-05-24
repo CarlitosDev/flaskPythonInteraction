@@ -9,13 +9,18 @@ from itertools import chain
 # import matplotlib toolkits to get some data
 from mpl_toolkits.mplot3d import axes3d
 # import Bokeh
-from bokeh.charts import Histogram
+from bokeh.charts import Histogram as bkHistogram
 from bokeh.embed import components
 # import date functionality
 import datetime as dt
 from dateutil.relativedelta import relativedelta
 
 app = Flask(__name__)
+
+# declare here any dataset so it will be global
+#...
+#...
+
 
 @app.route('/')
 def homepage():
@@ -136,8 +141,40 @@ def tickerOnTheFly(tickername):
 	stockChart  = serialize(stocks, render_to='stocksChart', output_type='json', title=titleText, chart_type='stock')
 	return render_template("index.html", pageTitle=pageTitle, paragraph=description, chart=stockChart)
 
-if __name__ == "__main__":
-    app.run()
+
+@app.route('/bokehTest')
+def bokehView():
+	# create random numbers
+	maxValue = 100;
+	df = pd.DataFrame(np.random.randint(maxValue, size=(100, 2)), columns=['randomA', 'randomB'])
+	feature_names = df.columns.values.tolist();
+	p = bkHistogram(df, legend='top_right', width=600, height=400);
+	pageTitle = 'testerFields'
+
+	# Set the x axis label
+	p.xaxis.axis_label = 'sdsd'
+	# Set the y axis label
+	p.yaxis.axis_label = 'Count'
+	# Embed plot into HTML via Flask Render
+	script, div = components(p)
+	return render_template("bokehRender.html", script=script, div=div, pageTitle=pageTitle)
+
+@app.route('/bokehTest2')
+def bokehView2():
+	from bokeh.sampledata.autompg import autompg as df
+	hist2 = bkHistogram(df, values='mpg', label='cyl', color='cyl', legend='top_right',
+					title="MPG Histogram by Cylinder Count", plot_width=800);
+
+	pageTitle = 'example from http://bokeh.pydata.org/en/latest/docs/reference/charts.html#histogram';
+
+	# Embed plot into HTML via Flask Render
+	script, div = components(hist2)
+	return render_template("bokehRender.html", script=script, div=div, pageTitle=pageTitle)
+
+# With debug=True, Flask server will auto-reload 
+# when there are code changes
+if __name__ == '__main__':
+	app.run(port=5000, debug=True)
 
 
 def stupidTester():
@@ -153,3 +190,11 @@ def stupidTester():
 	description = 'Tickers: ' + tickername;
 	titleText   = 'from ' + stocks.index[0].strftime('%Y-%m-%d') + ' to ' + stocks.index[-1].strftime('%Y-%m-%d')
 	stockChart  = serialize(stocks, render_to='stocksChart', output_type='json', title=titleText, chart_type='stock')
+
+maxValue = 100;
+df = pd.DataFrame(np.random.randint(maxValue, size=(100, 2)), columns=['randomA', 'randomB'])
+feature_names = df.columns.values.tolist();
+p = bkHistogram(df);
+
+import bokeh as bk
+bk.__version__
