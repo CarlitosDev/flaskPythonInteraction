@@ -3,8 +3,10 @@ from flask_pymongo import PyMongo
 from readStocks import read_stocks, normaliseStocks, getTickersList
 from pandas_highcharts.core import serialize
 import pandas as pd
+import numpy as np
 from pandas.compat import StringIO
 from itertools import chain
+from mpl_toolkits.mplot3d import axes3d
 app = Flask(__name__)
 
 @app.route('/')
@@ -13,9 +15,9 @@ def homepage():
 	tickersData   = getTickersList();
 	# Form the COUNTRY:
 	# tickersGoogle = tickersData['Exchange'] + ':' +   tickersData['Ticker'];
-	tickersGoogle = tickersData['Ticker'];
-	listOfTickers = tickersGoogle.tolist();
-	dataSource    = 'google';
+	tickersGoogle  = tickersData['Ticker'];
+	listOfTickers  = tickersGoogle.tolist();
+	dataSource     = 'google';
 	targetVariable = 'Close';
 	stocks = read_stocks(listOfSymbols = listOfTickers, targetVariable = targetVariable, datasource = dataSource);
 	#stocks = read_stocks(listOfSymbols = listOfTickers);
@@ -63,7 +65,52 @@ def cubeView():
 	categories    = list(chain.from_iterable(listOfTickers));
 	description   = 'Current tickers: ' + str(stocks.columns.values.tolist())[1:-1];
 	titleText     = 'from ' + stocks.index[0].strftime('%Y-%m-%d') + ' to ' + stocks.index[-1].strftime('%Y-%m-%d');
-	return render_template("cubeView.html", pageTitle=pageTitle, paragraph=description, categories=categories, titleText=titleText, label1=label1, label2=label2, avgValues=avgValues, maxValues=maxValues);
+	return render_template("cubeView.html", pageTitle=pageTitle, paragraph=description, categories=categories, 
+		titleText=titleText, label1=label1, label2=label2, avgValues=avgValues, maxValues=maxValues);
+
+@app.route('/scatterPlot')
+def scatterPlot():
+	pageTitle   = '3D scatter plot'
+	description = 'Test 3D charts from (pure) Highcharts'
+	# create random numbers
+	maxValue = 100;
+	df = pd.DataFrame(np.random.randint(maxValue, size=(20, 3)), columns=list('XYZ'))
+	xMax, yMax, zMax = df.max();
+	# df as a list
+	dataToPlot = df.values.tolist();
+	return render_template("scatter3DView.html", pageTitle=pageTitle, paragraph=description, 
+		plotValues=dataToPlot, xMax = xMax, yMax=yMax, zMax=zMax)
+
+@app.route('/streamPlot')
+def streamPlot():
+	pageTitle   = '3D stream plot'
+	description = 'Import some test data from mpl_toolkits.mplot3d'
+	# Get the test data
+	X, Y, Z    = axes3d.get_test_data(0.5)
+	numR, numC = X.shape
+	# Append the data
+	dTemp = pd.DataFrame();
+	df    = pd.DataFrame();
+	for i in range(0,numR-1):
+		if df.empty:
+			df['X'] = X[i]
+			df['Y'] = Y[i]
+			df['Z'] = Z[i]
+		else:
+			dTemp['X'] = X[i]
+			dTemp['Y'] = Y[i]
+			dTemp['Z'] = Z[i]
+			# ought to return 'df' as there's no 'inplace' for append
+			df = df.append(dTemp, ignore_index=True);
+	# make sure the values are >0
+	df['Z'] = 100*df['Z'];
+	df = abs(df);
+	xMax, yMax, zMax = df.max();
+	# df as a list
+	dataToPlot = df.values.tolist();
+	return render_template("scatter3DView.html", pageTitle=pageTitle, paragraph=description, 
+		plotValues=dataToPlot, xMax = xMax, yMax=yMax, zMax=zMax)
+
 
 if __name__ == "__main__":
     app.run()
