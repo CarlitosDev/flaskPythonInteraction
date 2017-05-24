@@ -1,12 +1,20 @@
 from flask import Flask, render_template
 from flask_pymongo import PyMongo
-from readStocks import read_stocks, normaliseStocks, getTickersList
+from readStocks import read_stocks, normaliseStocks, getTickersList, getTickerData
 from pandas_highcharts.core import serialize
 import pandas as pd
 import numpy as np
 from pandas.compat import StringIO
 from itertools import chain
+# import matplotlib toolkits to get some data
 from mpl_toolkits.mplot3d import axes3d
+# import Bokeh
+from bokeh.charts import Histogram
+from bokeh.embed import components
+# import date functionality
+import datetime as dt
+from dateutil.relativedelta import relativedelta
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -112,5 +120,36 @@ def streamPlot():
 		plotValues=dataToPlot, xMax = xMax, yMax=yMax, zMax=zMax)
 
 
+# try on-the-fly visualisation
+@app.route('/ticker/<tickername>')
+def tickerOnTheFly(tickername):
+	dataSource  = 'google';
+	print('Selecting {}'.format(tickername))
+	endDT       = dt.datetime.today();
+	startDT     = endDT - relativedelta(years=1);
+	df          = getTickerData(tickername, startDT, endDT, dataSource);
+	stocks      = df[['Open', 'Close']];
+    # web content
+	pageTitle   = 'Ticket on the fly'
+	description = 'Tickers: ' + tickername;
+	titleText   = 'from ' + stocks.index[0].strftime('%Y-%m-%d') + ' to ' + stocks.index[-1].strftime('%Y-%m-%d')
+	stockChart  = serialize(stocks, render_to='stocksChart', output_type='json', title=titleText, chart_type='stock')
+	return render_template("index.html", pageTitle=pageTitle, paragraph=description, chart=stockChart)
+
 if __name__ == "__main__":
     app.run()
+
+
+def stupidTester():
+	tickername  = 'AAPL'
+	dataSource  = 'google'; 	
+	endDT       = dt.datetime.today();
+	startDT     = endDT - relativedelta(years=1);
+	df          = getTickerData(tickername, startDT, endDT, dataSource);
+	df['MvAvg'] = pd.rolling_mean(df['Close'], window=3, min_periods=1)
+	stocks      = df[['Open', 'Close', 'MvAvg']];
+	# web content
+	pageTitle   = 'Ticket on the fly'
+	description = 'Tickers: ' + tickername;
+	titleText   = 'from ' + stocks.index[0].strftime('%Y-%m-%d') + ' to ' + stocks.index[-1].strftime('%Y-%m-%d')
+	stockChart  = serialize(stocks, render_to='stocksChart', output_type='json', title=titleText, chart_type='stock')

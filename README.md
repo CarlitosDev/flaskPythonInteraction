@@ -4,6 +4,8 @@ Proof of concept for a Google Cloud project. The current repository holds Python
 Comments:
 -------
 * 17/05/2017 Yahoo has changed the API so pandas_datareader is currently retrieving empty dataframes.
+* 24/05/2017 Trying Bokeh!
+
 
 Requirements:
 -------
@@ -11,6 +13,7 @@ Requirements:
 * pip install pandas_highcharts
 * pip install pymongo
 * pip install Flask-PyMongo
+* pip install bokeh
 
 Test it:
 -------
