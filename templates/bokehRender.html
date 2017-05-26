@@ -1,15 +1,25 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
   <head>
+    <style>
+    @import url(https://fonts.googleapis.com/css?family=Noto+Sans);
+    body {
+      font-family: 'Noto Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      color: #fff;
+      background: #fff;
+      }
+    </style>
+    <meta charset="utf-8">
 	<title>{{ pageTitle | safe}}</title>
     <link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.2.min.css" type="text/css" />
     <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.2.min.js"></script>
-    {{ script | safe }}
   </head>
 	<body>
-    <div class=page>
       <h1>{{ pageTitle | safe}}</h1>
-      {{ div | safe }}
-    </div>
+        {{ div | safe }}
+        {{ script | safe }}
 	</body>
 </html>

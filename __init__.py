@@ -9,17 +9,20 @@ from itertools import chain
 # import matplotlib toolkits to get some data
 from mpl_toolkits.mplot3d import axes3d
 # import Bokeh
-from bokeh.charts import Histogram as bkHistogram
 from bokeh.embed import components
 # import date functionality
 import datetime as dt
 from dateutil.relativedelta import relativedelta
+from bokehFunctions import *
+from testData import getCrossFilterData
 
 app = Flask(__name__)
 
 # declare here any dataset so it will be global
 #...
 #...
+
+
 
 
 @app.route('/')
@@ -141,40 +144,50 @@ def tickerOnTheFly(tickername):
 	stockChart  = serialize(stocks, render_to='stocksChart', output_type='json', title=titleText, chart_type='stock')
 	return render_template("index.html", pageTitle=pageTitle, paragraph=description, chart=stockChart)
 
+# BOKEH functionality
 
 @app.route('/bokehTest')
 def bokehView():
-	# create random numbers
-	maxValue = 100;
-	df = pd.DataFrame(np.random.randint(maxValue, size=(100, 2)), columns=['randomA', 'randomB'])
-	feature_names = df.columns.values.tolist();
-	p = bkHistogram(df, legend='top_right', width=600, height=400);
-	pageTitle = 'testerFields'
-
-	# Set the x axis label
-	p.xaxis.axis_label = 'sdsd'
-	# Set the y axis label
-	p.yaxis.axis_label = 'Count'
+	pageTitle = 'testerFields';
+	handleHistogram, feature_names = getUniformHistogram();
 	# Embed plot into HTML via Flask Render
-	script, div = components(p)
+	script, div = components(handleHistogram)
 	return render_template("bokehRender.html", script=script, div=div, pageTitle=pageTitle)
 
 @app.route('/bokehTest2')
 def bokehView2():
-	from bokeh.sampledata.autompg import autompg as df
-	hist2 = bkHistogram(df, values='mpg', label='cyl', color='cyl', legend='top_right',
-					title="MPG Histogram by Cylinder Count", plot_width=800);
-
-	pageTitle = 'example from http://bokeh.pydata.org/en/latest/docs/reference/charts.html#histogram';
-
+	# get autoMPG example
+	hist2, pageTitle = getAutoMPGexample();
 	# Embed plot into HTML via Flask Render
 	script, div = components(hist2)
 	return render_template("bokehRender.html", script=script, div=div, pageTitle=pageTitle)
 
-# With debug=True, Flask server will auto-reload 
-# when there are code changes
-if __name__ == '__main__':
-	app.run(port=5000, debug=True)
+@app.route('/bokehTest3')
+def bokehView3():
+	pageTitle = 'la paginita de prueba'
+	df, columns, discrete, continuous, quantileable = getCrossFilterData();
+	x = Select(title='X-Axis', value='mpg', options=columns)
+	y = Select(title='Y-Axis', value='hp', options=columns)
+	size = Select(title='Size', value='None', options=['None'] + quantileable)
+	color = Select(title='Color', value='None', options=['None'] + quantileable)
+
+	# get the crossfilter example
+	figHandle = getCrossFilter(df, discrete, x, y, size, color);
+	
+	#layout = row(controls, figHandle)
+	#controls  = widgetbox([x, y, color, size], width=200)
+	#x.on_change('value', update)
+	#y.on_change('value', update)
+	#size.on_change('value', update)
+	#color.on_change('value', update)
+	#curdoc().add_root(layout)
+	#curdoc().title = "Crossfilter"
+
+	# Embed plot into HTML via Flask Render
+	script, div = components(figHandle)
+	return render_template("bokehRender.html", script=script, div=div, pageTitle=pageTitle)
+
+
 
 
 def stupidTester():
@@ -191,10 +204,9 @@ def stupidTester():
 	titleText   = 'from ' + stocks.index[0].strftime('%Y-%m-%d') + ' to ' + stocks.index[-1].strftime('%Y-%m-%d')
 	stockChart  = serialize(stocks, render_to='stocksChart', output_type='json', title=titleText, chart_type='stock')
 
-maxValue = 100;
-df = pd.DataFrame(np.random.randint(maxValue, size=(100, 2)), columns=['randomA', 'randomB'])
-feature_names = df.columns.values.tolist();
-p = bkHistogram(df);
 
-import bokeh as bk
-bk.__version__
+# With debug=True, Flask server will auto-reload 
+# when there are code changes
+if __name__ == '__main__':
+	app.run(port=5000, debug=True)
+
