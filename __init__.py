@@ -15,8 +15,18 @@ import datetime as dt
 from dateutil.relativedelta import relativedelta
 from bokehFunctions import *
 from testData import getCrossFilterData
+from bokeh.embed import autoload_server
+import subprocess
+import atexit
 
 app = Flask(__name__)
+
+bokeh_process = subprocess.Popen(
+    ['bokeh', 'serve','--allow-websocket-origin=localhost:5000','bokehSliders.py'], stdout=subprocess.PIPE)
+
+@atexit.register
+def kill_server():
+    bokeh_process.kill()
 
 # declare here any dataset so it will be global
 #...
@@ -160,6 +170,14 @@ def bokehView2():
 	hist2, pageTitle = getAutoMPGexample();
 	# Embed plot into HTML via Flask Render
 	script, div = components(hist2)
+	
+	# Add more stuff
+	#slider1 = Slider(start=0, end = 100, value = 50, step = 1, title = "Mag")
+	#slider2 = Slider(start=0, end = 100, value = 50, step = 1, title = "test")
+	#plots = {'Red': hist2, 'Blue': hist2}
+	#script, div = components(plots)
+	#script, div = components({"hist2": hist2, "slider1":vform(slider1), "slider2":vform(slider2)})
+	# Embed plot into HTML via Flask Render
 	return render_template("bokehRender.html", script=script, div=div, pageTitle=pageTitle)
 
 @app.route('/bokehTest3')
@@ -188,6 +206,12 @@ def bokehView3():
 	return render_template("bokehRender.html", script=script, div=div, pageTitle=pageTitle)
 
 
+# use the deployment Bokeh server
+#  bokeh serve --host localhost:5000 --host localhost:5006 bokehSliders.py
+@app.route('/bokehSliders')
+def bokehView4():
+	script = autoload_server(model=None, app_path="/bokehSliders")
+	return render_template('bokehSliders.html', bokeh_script=script)
 
 
 def stupidTester():

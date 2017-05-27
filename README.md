@@ -23,11 +23,16 @@ Test it:
 
 
 ## Current views
-1. http://127.0.0.1:5000/cubeView
-1. http://127.0.0.1:5000/polar
-1. http://127.0.0.1:5000/pie
 1. http://127.0.0.1:5000/scatterPlot
 1. http://127.0.0.1:5000/streamPlot
+1. http://127.0.0.1:5000/ticker/<tickername>
+1. http://127.0.0.1:5000/bokehTest
+1. http://127.0.0.1:5000/bokehTest2  (down)
+1. http://127.0.0.1:5000/bokehTest3
+1. http://127.0.0.1:5000/cubeView (down)
+1. http://127.0.0.1:5000/polar (down)
+1. http://127.0.0.1:5000/pie (down)
+
 
 ```python
 __init__.py
