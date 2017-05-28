@@ -14,6 +14,7 @@ Requirements:
 * pip install pymongo
 * pip install Flask-PyMongo
 * pip install bokeh
+* easy_install quandl
 
 Test it:
 -------

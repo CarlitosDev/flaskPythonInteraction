@@ -26,13 +26,12 @@ bokeh_process = subprocess.Popen(
 
 @atexit.register
 def kill_server():
+    print('Bokeh server killed')
     bokeh_process.kill()
 
 # declare here any dataset so it will be global
 #...
 #...
-
-
 
 
 @app.route('/')
@@ -234,3 +233,29 @@ def stupidTester():
 if __name__ == '__main__':
 	app.run(port=5000, debug=True)
 
+
+
+pageTitle   = 'Pie View'
+description = 'Test pie charts from Python-Highcharts'
+listOfTickers = [['BTCUSD', 'BTCEUR', 'BTCGBP']];
+stocks = read_stocks(listOfSymbols = listOfTickers);
+df = pd.DataFrame(stocks.mean(), columns=['avgPrice']);
+listOfTickers  = tickersGoogle.tolist();
+dataSource     = 'google';
+stocks = read_stocks(listOfSymbols = listOfTickers, datasource = dataSource);
+dataSource  = 'google'; 	
+endDT       = dt.datetime.today();
+startDT     = endDT - relativedelta(years=1);
+tickername  = 'BTCUSD'
+df          = getTickerData(tickername, startDT, endDT, dataSource);
+
+tickername  = 'BTC'
+df          = getTickerData(tickername, startDT, endDT, dataSource);
+
+import pandas_datareader.data as web
+jpy = web.DataReader('DEXJPUS', 'fred')
+jpy = web.DataReader('DEXJPUS', 'fred')
+
+# Read BITCOIN exchange rate
+import quandl
+df = pd.DataFrame(quandl.get("BCHARTS/COINBASEGBP",  start_date="2016-02-11", end_date="2017-12-31"))
